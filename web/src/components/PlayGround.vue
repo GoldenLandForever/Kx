@@ -1,15 +1,15 @@
 <template>
     <div class="playground">
-        <GameMap />
+        <LocalGameMap />
     </div>
 </template>
 
 <script>
-import GameMap from './GameMap.vue'
+import LocalGameMap from './LocalGameMap.vue'
 
 export default {
     components: {
-        GameMap,
+        LocalGameMap,
     }
 }
 </script>
