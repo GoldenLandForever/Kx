@@ -1,7 +1,13 @@
 package com.example.matchingsystem;
 
+import com.example.matchingsystem.service.impl.MatchingServiceImpl;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class MatchingSystemApplication {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        MatchingServiceImpl.matchingPool.start();
+        SpringApplication.run(MatchingSystemApplication.class,args);
     }
 }

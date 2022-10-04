@@ -16,12 +16,18 @@ export default{
         aMap: [1,1,1,1,1,1,1,1,0],//当前棋盘
         bMap: [0,0,0,0,0,0,0,0,0],
         a_score: 0,//当前对局得分
-        b_score: 0
+        b_score: 0,
+        turn:'',
+        a_point: 0,
+        b_point:0,
     },
     getters:{
 
     },
     mutations:{
+        updateSocket(state, socket) {
+            state.socket = socket;
+        },
         clearMap(state){
             state.aMap = [0,0,0,0,0,0,0,0,0];
             state.bMap =[0,0,0,0,0,0,0,0,0];
@@ -34,6 +40,37 @@ export default{
         },
         updateLoser(state, loser) {
             state.loser = loser;
+        },
+        updateOpponent(state, opponent) {
+            state.opponent_username = opponent.username;
+            state.opponent_photo = opponent.photo;
+        },
+        updateGame(state, game) {
+            state.aMap = game.aMap;
+            state.bMap = game.bMap;
+            state.a_id = game.a_id;
+            state.b_id = game.b_id;
+            state.a_rating = game.a_rating;
+            state.b_rating = game.b_rating;
+            state.turn = game.turn;
+            state.a_point = game.a_point;
+            state.b_point = game.b_point;
+        },
+        updateRes(state,MyData){
+            state.loser = MyData.loser;
+            state.a_score = MyData.a_score;
+            state.b_score = MyData.b_score;
+        },
+        updateRoll(state, MyData){
+            state.a_point = MyData.a_point;
+            state.b_point = MyData.b_point;
+        },
+        updateCurMap(state, MyData){
+            state.turn = MyData.turn;
+            state.aMap = MyData.aMap;
+            state.bMap = MyData.bMap;
+            state.a_point = MyData.a_point;
+            state.b_point = MyData.b_point;
         },
     },
     actions:{

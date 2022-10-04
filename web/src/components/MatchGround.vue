@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="matchground">
         <div class="row">
             <div class="col-6">
@@ -77,4 +77,4 @@ div.user-username {
     color: white;
     padding-top: 2vh;
 }
-</style> -->
+</style>
