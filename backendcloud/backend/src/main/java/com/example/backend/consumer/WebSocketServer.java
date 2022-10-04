@@ -15,6 +15,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -121,11 +122,14 @@ public class WebSocketServer {
         data.add("user_id", this.user.getId().toString());
         restTemplate.postForObject(removePlayerurl, data, String.class);
     }
-    private void move(int direction) {
-        if (game.getStep() == 0 && game.getPlayerA().getId().equals(user.getId())) {
+    private void fillA(int direction) {
+        if (Objects.equals(game.getTurn(), "A") && game.getPlayerA().getId().equals(user.getId())) {
                 game.setNextStepA(direction);
-        } else if (game.getStep() == 1 && game.getPlayerB().getId().equals(user.getId())) {
-                game.setNextStepB(direction);
+        }
+    }
+    private void fillB(int direction) {
+        if (Objects.equals(game.getTurn(), "B") && game.getPlayerB().getId().equals(user.getId())) {
+            game.setNextStepB(direction);
         }
     }
     @OnMessage
@@ -138,10 +142,14 @@ public class WebSocketServer {
             startMatching();
         } else if ("stop-matching".equals(event)) {
             stopMatching();
-        }else if ("roll".equals(event)){
-            game.roll();
-        }else if ("move".equals(event)) {
-            move(data.getInteger("direction"));
+        }else if ("rollA".equals(event)){
+            game.rollA();
+        }else if ("rollB".equals(event)){
+            game.rollB();
+        }else if ("fillA".equals(event)) {
+            fillA(data.getInteger("direction"));
+        }else if ("fillB".equals(event)) {
+            fillB(data.getInteger("direction"));
         }
 
     }

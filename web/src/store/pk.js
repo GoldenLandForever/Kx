@@ -17,7 +17,7 @@ export default{
         bMap: [0,0,0,0,0,0,0,0,0],
         a_score: 0,//当前对局得分
         b_score: 0,
-        turn:'',
+        turn:'A',
         a_point: 0,
         b_point:0,
     },
@@ -61,8 +61,10 @@ export default{
             state.a_score = MyData.a_score;
             state.b_score = MyData.b_score;
         },
-        updateRoll(state, MyData){
+        updateApoint(state, MyData){
             state.a_point = MyData.a_point;
+        },
+        updateBpoint(state, MyData){
             state.b_point = MyData.b_point;
         },
         updateCurMap(state, MyData){

@@ -1,27 +1,28 @@
 <template>
     <div v-if="$store.state.pk.model === 'none'">
-        <div class="row">
+        <div class="row" style="width:1200px">
             <button @click="local">
                 <font color="white" size="9">
                     本地对战
                 </font>
             </button>
         </div>
-        <div class="row">
+        <div class="row" style="width:1200px">
             <button @click="match">
                 <font color="white" size="9">
                     匹配对战
                 </font>
             </button>
         </div>
-        <div class="row">
+        <div class="row" style="width:1200px">
             <button @click="bot">
                 <font color="white" size="9">人机对战</font>
             </button>
         </div>
     </div>
     <PlayGround v-if="$store.state.pk.model === 'local'"/>
-    <MatchGround v-if="$store.state.pk.model === 'match'" />
+    <MatchGround v-if="$store.state.pk.model === 'match' && $store.state.pk.status === 'matching'" />
+    <MatchPlayGround v-if="$store.state.pk.model === 'match' && $store.state.pk.status === 'playing'"></MatchPlayGround>
     <!-- <ResultBoard v-if="$store.state.pk.loser != 'none'" /> -->
 </template>
 
@@ -30,12 +31,14 @@ import PlayGround from '../../components/PlayGround.vue'
 import MatchGround from '@/components/MatchGround.vue';
 import { onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
+import MatchPlayGround from '../../components/MatchPlayGround.vue'
 
 export default {
     components: {
-        PlayGround,
-        MatchGround
-    },
+    PlayGround,
+    MatchGround,
+    MatchPlayGround
+},
     setup(){
         const store = useStore();
         const socketUrl = `ws://localhost:3000/websocket/${store.state.user.token}`
@@ -70,7 +73,8 @@ export default {
 
                     console.log('match found!')
                 } else if (data.event === 'result' && store.state.pk.status === 'playing') store.commit("updateRes", data);
-                else if (data.event === 'roll') store.commit("updateRoll", data);
+                else if (data.event === 'rollA') store.commit("updateApoint", data);
+                else if (data.event === 'rollB') store.commit("updateBpoint", data);
                 else if (data.event === 'curMap') store.commit("updateCurMap", data);
 
                 socket.onclose = () => {

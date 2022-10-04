@@ -5,6 +5,7 @@ import com.example.backend.consumer.WebSocketServer;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,9 +14,10 @@ public class Game extends Thread {
 
     private Integer[] aMap, bMap;
 
-    private Integer dice_num = 0;
+    private Integer a_point = 0;
+    private Integer b_point = 0;
 
-    private Integer step = 0;
+    private String  turn  = "A";
 
     private Integer stepA = null;
 
@@ -40,8 +42,11 @@ public class Game extends Thread {
         stepB = nextStep;
     }
 
-    public Integer getStep() {
-        return step;
+//    public Integer getStep() {
+//        return step;
+//    }
+    public String getTurn(){
+        return turn;
     }
 
     public Integer[] getAMap() {
@@ -56,26 +61,34 @@ public class Game extends Thread {
 
     private String loser = null;
 
-    private final static String addBotUrl = "http://127.0.0.1:3002/bot/add/";
-
     public Game(Integer id_a, Integer id_b) {
         aMap = new Integer[9];
         bMap = new Integer[9];
         for (int i = 0; i < 9; i++) aMap[i] = bMap[i] = 0;
 
-        step = 0;
+        turn = "A";
 
         playerA = new Player(id_a, 0);
         playerB = new Player(id_b, 0);
     }
     //投骰子
-    public void roll() {
+    public void rollA() {
         Random random = new Random();
-        if (dice_num == 0) dice_num = random.nextInt(6) + 1;
+        if (a_point == 0) a_point = random.nextInt(6) + 1;
 
         JSONObject resp = new JSONObject();
-        resp.put("event", "roll");
-        resp.put("dice_num", dice_num);
+        resp.put("event", "rollA");
+        resp.put("a_point", a_point);
+
+        sendAllMsg(resp.toJSONString());
+    }
+    public void rollB() {
+        Random random = new Random();
+        if (b_point == 0) b_point = random.nextInt(6) + 1;
+
+        JSONObject resp = new JSONObject();
+        resp.put("event", "rollB");
+        resp.put("b_point", b_point);
 
         sendAllMsg(resp.toJSONString());
     }
@@ -89,13 +102,12 @@ public class Game extends Thread {
             throw new RuntimeException(e);
         }
 
-
         for (int i = 0; i < 200; i++) {
             try {
                 Thread.sleep(100);
 
-                if (step == 0 && stepA != null) return true;
-                if (step == 1 && stepB != null) return true;
+                if (Objects.equals(turn, "A") && stepA != null) return true;
+                if (Objects.equals(turn, "B") && stepB != null) return true;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -108,15 +120,16 @@ public class Game extends Thread {
     private void setMap() {
         try{
             lock.lock();
-            Integer num = dice_num;
-            if (step == 0) {
+            Integer numA = a_point;
+            Integer numB = b_point;
+            if ("A".equals(turn)) {
                 Integer pos = stepA;
-                aMap[pos] = num;
-                for (int i = pos / 3 * 3; i < pos / 3 * 3 + 3; i++) if (bMap[i].equals(num)) bMap[i] = 0;
+                aMap[pos] = numA;
+                for (int i = pos / 3 * 3; i < pos / 3 * 3 + 3; i++) if (bMap[i].equals(numA)) bMap[i] = 0;
             } else {
                 Integer pos = stepB;
-                bMap[pos] = num;
-                for (int i = pos / 3 * 3; i < pos / 3 * 3 + 3; i++) if (aMap[i].equals(num)) aMap[i] = 0;
+                bMap[pos] = numB;
+                for (int i = pos / 3 * 3; i < pos / 3 * 3 + 3; i++) if (aMap[i].equals(numB)) aMap[i] = 0;
             }
         }finally {
             lock.unlock();
@@ -142,26 +155,13 @@ public class Game extends Thread {
         return score;
     }
 
-    //判断胜负
-    private void judge_loser() {
-        int a_score = countMap(aMap);
-        int b_score = countMap(bMap);
 
-        if (a_score > b_score) loser = "A";
-        else if (a_score < b_score) loser = "B";
-        else loser = "all";
-
-        getPlayerA().setScore(a_score);
-        getPlayerB().setScore(b_score);
-
-        status = "finished";
-    }
 
     //判断是否结束
     private void judge_full() {
         int cnt = 0;
 
-        if (step == 0) {
+        if (Objects.equals(turn, "A")) {
             for (int i = 0; i < 9; i++) if (aMap[i] != 0) cnt++;
         } else {
             for (int i = 0; i < 9; i++) if (bMap[i] != 0) cnt++;
@@ -170,6 +170,20 @@ public class Game extends Thread {
         if (cnt == 9) {
             judge_loser();
         }
+    }
+    //判断胜负
+    private void judge_loser() {
+        int a_score = countMap(aMap);
+        int b_score = countMap(bMap);
+
+        if (a_score > b_score) loser = "B";
+        else if (a_score < b_score) loser = "A";
+        else loser = "all";
+
+        getPlayerA().setScore(a_score);
+        getPlayerB().setScore(b_score);
+
+        status = "finished";
     }
 
     @Override
@@ -187,7 +201,7 @@ public class Game extends Thread {
                     break;
                 }
             } else {
-                if (step == 0) loser = "A";
+                if (Objects.equals(turn, "A")) loser = "A";
                 else loser = "B";
 
                 sendResult();
@@ -218,14 +232,17 @@ public class Game extends Thread {
     //广播移动
     private void sendCurMap() {
         stepA = stepB = null;
-        dice_num = 0;
-        step = (step + 1) % 2;
+        a_point = 0;
+        b_point = 0;
+        if(Objects.equals(turn, "A")) turn ="B";
+        else turn = "A";
         JSONObject resp = new JSONObject();
         resp.put("event", "curMap");
         resp.put("aMap", aMap);
         resp.put("bMap", bMap);
-        resp.put("step", step);
-        resp.put("dice_num", dice_num);
+        resp.put("turn", turn);
+        resp.put("a_point", a_point);
+        resp.put("b_point", b_point);
         sendAllMsg(resp.toJSONString());
     }
 }
