@@ -56,6 +56,8 @@ public class Game extends Thread {
     public Integer[] getBMap() {
         return bMap;
     }
+    public Integer getA_point(){return  a_point;}
+    public Integer getB_point(){return  b_point;}
 
     private String status = "playing";
 

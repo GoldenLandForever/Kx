@@ -11,15 +11,15 @@ export default{
         b_id: '',
         a_rating: '',//rank分
         b_rating: '',
-        // aMap: [0,0,0,0,0,0,0,0,0],//当前棋盘
-        // bMap: [0,0,0,0,0,0,0,0,0],
-        aMap: [1,1,1,1,1,1,1,1,0],//当前棋盘
+        aMap: [0,0,0,0,0,0,0,0,0],//当前棋盘
         bMap: [0,0,0,0,0,0,0,0,0],
         a_score: 0,//当前对局得分
         b_score: 0,
         turn:'A',
         a_point: 0,
         b_point:0,
+        a_photo:"",
+        b_photo:"",
     },
     getters:{
 
@@ -55,6 +55,8 @@ export default{
             state.turn = game.turn;
             state.a_point = game.a_point;
             state.b_point = game.b_point;
+            state.a_photo = game.a_photo;
+            state.b_photo = game.b_photo;
         },
         updateRes(state,MyData){
             state.loser = MyData.loser;

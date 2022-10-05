@@ -97,6 +97,11 @@ public class WebSocketServer {
         respGame.put("b_id", game.getPlayerB().getId());
         respGame.put("a_rating", a.getRating());
         respGame.put("b_rating", b.getRating());
+        respGame.put("turn",game.getTurn());
+        respGame.put("a_point",game.getA_point());
+        respGame.put("b_point",game.getB_point());
+        respGame.put("a_photo",a.getPhoto());
+        respGame.put("b_photo",b.getPhoto());
 //        respGame.put("step", 0);
 //        respGame.put("dice_num", 0);
 

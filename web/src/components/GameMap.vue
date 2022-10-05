@@ -1,12 +1,15 @@
 <template>
     <div class="row">
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointA}}</button>    
+            <button type="button" class="btn btn-light">{{$store.state.pk.a_point}}</button>    
             <div class="user-photo">
-                <img :src="$store.state.user.photo" alt="">
+                <img :src="$store.state.pk.a_photo" alt="">
             </div>
-            <div class="result-board-text" >
+            <div class="result-board-text" v-if="$store.state.user.id == $store.state.pk.a_id">
                 {{$store.state.user.username}}
+            </div>
+            <div class="result-board-text" v-else>
+                {{$store.state.pk.opponent_username}}
             </div>
         </div>
         <div class="col-3">
@@ -28,23 +31,32 @@
             </button>
         </div>   
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointB}}</button> 
+            <button type="button" class="btn btn-light">{{$store.state.pk.b_point}}</button> 
             <div class="user-photo">
-                <img :src="$store.state.pk.opponent_photo" alt="">
+                <img :src="$store.state.pk.b_photo" alt="">
             </div>
-            <div class="result-board-text" >
+            <div class="result-board-text" v-if="$store.state.user.id == $store.state.pk.b_id">
+                {{$store.state.user.username}}
+            </div>
+            <div class="result-board-text" v-else>
                 {{$store.state.pk.opponent_username}}
-            </div>   
+            </div>  
         </div>
     </div>
     <div class="result-board" v-if="$store.state.pk.loser !== 'none'">
         <div class="result-board-text" v-if="$store.state.pk.loser === 'all'">
             平局
         </div>
-        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'A'">
+        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'A' && $store.state.user.id == $store.state.pk.a_id">
             {{$store.state.pk.opponent_username}}获胜
         </div>
-        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'B' ">
+        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'A' && $store.state.user.id == $store.state.pk.b_id">
+            {{$store.state.user.username}}获胜
+        </div>
+        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'B' && $store.state.user.id == $store.state.pk.b_id">
+            {{$store.state.pk.opponent_username}}获胜
+        </div>
+        <div class="result-board-text" v-else-if="$store.state.pk.loser === 'B'&& $store.state.user.id == $store.state.pk.a_id">
             {{$store.state.user.username}}获胜
         </div>
         <div class="row">

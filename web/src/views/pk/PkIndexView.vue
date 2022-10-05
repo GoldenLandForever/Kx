@@ -72,7 +72,7 @@ export default {
                     store.commit("updateGame", data.game);
 
                     console.log('match found!')
-                } else if (data.event === 'result' && store.state.pk.status === 'playing') store.commit("updateRes", data);
+                } else if (data.event === 'result') store.commit("updateRes", data);
                 else if (data.event === 'rollA') store.commit("updateApoint", data);
                 else if (data.event === 'rollB') store.commit("updateBpoint", data);
                 else if (data.event === 'curMap') store.commit("updateCurMap", data);
