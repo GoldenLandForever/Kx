@@ -18,11 +18,12 @@
             </button>
         </div>
         <div class="col-4">
-            <div class="mid">
-                <button type="button" class="btn btn-primary" @click="click_match_btn" v-if="match_btn_info =='开始游戏'">
-                    <div color="white" size="2">{{match_btn_info}}</div>
-                </button>     
-                <button type="button" class="btn btn-warning" @click="click_match_btn" v-else><div size="2">投掷骰子</div></button>     
+            <div class="mid">   
+                <button type="button" class="btn btn-warning" @click="click_match_btn" ><div size="2">投掷骰子</div></button>   
+                <div class="text-wrap">
+                    <div v-if="$store.state.pk.turn === 'A' && $store.state.user.id == $store.state.pk.a_id">你的回合</div>
+                    <div v-else-if="$store.state.pk.turn === 'B' && $store.state.user.id == $store.state.pk.b_id">你的回合</div>
+                </div>  
             </div>
         </div>
         <div class="col-3">
@@ -155,7 +156,7 @@ setup() {
         
     }
     const restart = () => {
-        
+        store.commit("updateModel","none");
         store.commit("clearMap");
         store.commit("updateStatus", "matching");
         store.commit("updateLoser", "none");
@@ -167,6 +168,8 @@ setup() {
     onUnmounted(() => {
         store.commit("updateModel","none");
         store.commit("clearMap");
+        store.commit("updateStatus", "matching");
+        store.commit("updateLoser", "none");
         store.commit("updateOpponent", {
             username: "我的对手",
             photo: "https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png",
@@ -215,7 +218,14 @@ font-weight: 600;
 font-style: italic;
 padding-top: 5vh;
 }
-
+div.text-wrap {
+text-align: center;
+color:rgba(247, 245, 245, 0.879);
+font-size: 20px;
+font-weight: 200;
+font-style: italic;
+padding-top: 2vh;
+}
 div.result-board-btn {
 padding-top: 7vh;
 text-align: center;

@@ -205,7 +205,10 @@ public class Game extends Thread {
             } else {
                 if (Objects.equals(turn, "A")) loser = "A";
                 else loser = "B";
-
+                int a_score = countMap(aMap);
+                int b_score = countMap(bMap);
+                getPlayerA().setScore(a_score);
+                getPlayerB().setScore(b_score);
                 sendResult();
                 break;
             }

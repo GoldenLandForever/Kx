@@ -1,16 +1,20 @@
 <template>
     <div class="playground">
-        <LocalGameMap />
+        <LocalGameMap v-if="$store.state.pk.model === 'local'" />
+        <BotGameMap v-if="$store.state.pk.model === 'bot'"/>
     </div>
 </template>
 
 <script>
 import LocalGameMap from './LocalGameMap.vue'
+import BotGameMap from './BotGameMap.vue'
+
 
 export default {
     components: {
-        LocalGameMap,
-    }
+    LocalGameMap,
+    BotGameMap
+}
 }
 </script>
 

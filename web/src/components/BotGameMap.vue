@@ -1,9 +1,12 @@
 <template>
     <div class="row">
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointA}}</button>    
+            <button type="button" class="btn btn-light">{{pointA}}</button>    \
+            <div class="user-photo">
+                <img :src="$store.state.user.photo" alt="">
+            </div>
             <div class="result-board-text" >
-                1P
+                {{$store.state.user.username}}
             </div>
         </div>
         <div class="col-3">
@@ -12,11 +15,11 @@
             </button>
         </div>
         <div class="col-4">
-            <div class="mid">
+            <div class="mid" >
                 <button type="button" class="btn btn-primary" @click="click_match_btn" v-if="match_btn_info =='开始游戏'">
-                    <div color="white" size="2">{{match_btn_info}}</div>
+                    <div color="white" size="9">{{match_btn_info}}</div>
                 </button>     
-                <button type="button" class="btn btn-warning" @click="click_match_btn" v-else><div size="2">{{match_btn_info}}</div></button>     
+                <button type="button" class="btn btn-warning" @click="click_match_btn" v-else><div size="5">{{match_btn_info}}</div></button>     
             </div>
         </div>
         <div class="col-3">
@@ -24,10 +27,12 @@
                 {{item}}
             </button>
         </div>   
-        <div class="col-1">
+        <div class="col-1" style="overflow: hidden; text-overflow:ellipsis; white-space: nowrap;">
             <button type="button" class="btn btn-light">{{pointB}}</button> 
             <div class="result-board-text" >
-                2P
+                <font color="white" size="5">
+                    我心逍遥
+                </font>
             </div>   
         </div>
     </div>
@@ -64,7 +69,6 @@ export default{
 setup() {
     
     const store = useStore();
-    let arr = ref([0,1,2,3,4,5,6,7,8]);
     let match_btn_info = ref('开始游戏');
     let pointA = ref();
     let is_fill = ref(true);
@@ -81,9 +85,7 @@ setup() {
                     pointB.value = '';
                     pointA.value = Math.floor(Math.random() * 6) + 1;
                 }else{
-                    pointB.value = Math.floor(Math.random() * 6) + 1;
-                    pointA.value = '';
-                    turn.value = 'A';
+                    alert("还没到你的回合,不过我想你看不到这条信息，没人手速那么快吧");
                 }
             }else{
                 alert("请选择落子位置");
@@ -109,7 +111,6 @@ setup() {
                 return true;
             }
         }
-        console.log(111);
         return false;
     }
 
@@ -163,6 +164,27 @@ setup() {
                     store.state.pk.aMap[index] = pointA.value;
                     is_fill.value = true;
                     check_delete(index);
+                    // let data = JSON.stringify({
+                    //     ownBoard:
+                    // });
+                    $.ajax({
+                        url: "http://localhost:3000/pk/bot/",
+                        type: "post",
+                        data: {
+
+                        },
+                        success(resp) {
+                            if (resp.error_message === "success") {
+                                context.commit("updateToken", resp.token);
+                                data.success(resp);
+                            } else {
+                                data.error(resp);
+                            }
+                        },
+                        error(resp) {
+                            data.error(resp);
+                        }
+                    });
                 }else{
                     alert("不能重复落子");
                 }
@@ -178,27 +200,9 @@ setup() {
             alert("游戏结束");
         }
     }
-    const fillB = (index) => {
-        if(is_fill.value == false){
-            if(turn.value == 'A'){
-                if(store.state.pk.bMap[index] == 0){
-                    is_fill.value = true;
-                    store.state.pk.bMap[index] = pointB.value;
-                    check_delete(index);
-                    
-                }else{
-                    alert("不能重复落子");
-                }
-            }else{
-                alert("不能放置于对手棋盘");
-            }
-        }else{
-            alert("轮到对手掷筛");
-        }
-        if(check_match_end()){
-            game_result();
-            alert("游戏结束");
-        }
+    const fillB = () => {
+        //需要调整报错
+        alert("不能放置于对手棋盘");
     }
     const game_result = () => {
         let a_score = 0;
@@ -227,10 +231,8 @@ setup() {
             else if (b == c) b_score += b * 4 + a;
             else b_score += (a + b + c);
         }
-        
         store.state.pk.a_score = a_score;
         store.state.pk.b_score = b_score;
-
         if(store.state.pk.a_score > store.state.pk.b_score){
             store.commit("updateLoser", "B");
         }else if(store.state.pk.a_score == store.state.pk.b_score){
@@ -239,7 +241,6 @@ setup() {
             store.commit("updateLoser", "A");
         }
         console.log(store.state.pk.loser);
-        console.log(store.state.pk.a_score);
     }
     const restart = () => {
         pointA.value = '';
@@ -254,7 +255,6 @@ setup() {
     })
 
     return {
-        arr,
         click_match_btn,
         match_btn_info,
         fillA,
@@ -283,6 +283,7 @@ width: 100px;
 height: 50px;
 margin: 2vh auto;
 padding-top: 40vh;
+padding-right: 60%;
 }
 div.result-board {
 height: 50%;
@@ -301,6 +302,14 @@ font-style: italic;
 padding-top: 5vh;
 }
 
+div.result-board-btn {
+padding-top: 7vh;
+text-align: center;
+}
+div.user-photo {
+    text-align: center;
+    padding-top: 5vh;
+}
 div.result-board-btn > button{
     width: 300px;
     font-size: 35px;

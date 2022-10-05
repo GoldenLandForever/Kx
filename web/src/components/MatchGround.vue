@@ -13,6 +13,9 @@
                 <div class="user-photo">
                     <img :src="$store.state.pk.opponent_photo" alt="">
                 </div>
+                <div class="user-photo">
+                    <img src="https://lmg.jj20.com/up/allimg/tx20/47041101418152.jpg" alt="">
+                </div>
                 <div class="user-username">
                     {{ $store.state.pk.opponent_username }}
                 </div>

@@ -20,10 +20,9 @@
             </button>
         </div>
     </div>
-    <PlayGround v-if="$store.state.pk.model === 'local'"/>
+    <PlayGround v-if="$store.state.pk.model === 'local' || $store.state.pk.model === 'bot'"/>
     <MatchGround v-if="$store.state.pk.model === 'match' && $store.state.pk.status === 'matching'" />
     <MatchPlayGround v-if="$store.state.pk.model === 'match' && $store.state.pk.status === 'playing'"></MatchPlayGround>
-    <!-- <ResultBoard v-if="$store.state.pk.loser != 'none'" /> -->
 </template>
 
 <script>
@@ -37,7 +36,7 @@ export default {
     components: {
     PlayGround,
     MatchGround,
-    MatchPlayGround
+    MatchPlayGround,
 },
     setup(){
         const store = useStore();
