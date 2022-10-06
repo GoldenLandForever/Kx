@@ -44,7 +44,7 @@
             2P获胜
         </div>
         <div class="result-board-text" v-else-if="$store.state.pk.loser === 'B' ">
-            1P获胜
+            {{$store.state.user.username}}获胜
         </div>
         <div class="row">
             <div class="result-board-text" >
@@ -65,6 +65,7 @@
 import { useStore } from 'vuex';
 import { ref } from 'vue';
 import { onUnmounted } from 'vue'
+import $ from 'jquery'
 export default{
 setup() {
     
@@ -164,25 +165,25 @@ setup() {
                     store.state.pk.aMap[index] = pointA.value;
                     is_fill.value = true;
                     check_delete(index);
-                    // let data = JSON.stringify({
-                    //     ownBoard:
-                    // });
+                    turn.value = 'A'; 
+                    pointA.value = '';
+                    pointB.value = Math.floor(Math.random() * 6) + 1;
                     $.ajax({
                         url: "http://localhost:3000/pk/bot/",
                         type: "post",
-                        data: {
-
+                        traditional:true,
+                        data:{
+                            aMap: store.state.pk.aMap,
+                            bMap:store.state.pk.bMap,
+                            point:pointB.value,
                         },
                         success(resp) {
-                            if (resp.error_message === "success") {
-                                context.commit("updateToken", resp.token);
-                                data.success(resp);
-                            } else {
-                                data.error(resp);
-                            }
+                            store.state.pk.bMap[resp] = pointB.value;
+                            check_delete(resp);
+                            
                         },
                         error(resp) {
-                            data.error(resp);
+                            console.log(resp);
                         }
                     });
                 }else{
