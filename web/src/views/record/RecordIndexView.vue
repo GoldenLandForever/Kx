@@ -1,5 +1,5 @@
 <template>
-    <ContentField>对局记录</ContentField>
+    <ContentField>游戏规则</ContentField>
   </template>
   
   <script>
@@ -13,4 +13,5 @@
   </script>
   
   <style scoped>
+    
   </style>

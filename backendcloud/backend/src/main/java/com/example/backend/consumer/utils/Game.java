@@ -2,6 +2,7 @@ package com.example.backend.consumer.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.backend.consumer.WebSocketServer;
+import com.example.backend.pojo.User;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.Arrays;
@@ -230,8 +231,31 @@ public class Game extends Thread {
         resp.put("loser", loser);
         resp.put("a_score", playerA.getScore());
         resp.put("b_score", playerB.getScore());
-
+        saveToDatabase();
         sendAllMsg(resp.toJSONString());
+    }
+    //储存到数据库
+    private void saveToDatabase() {
+        Integer ratingA = WebSocketServer.userMapper.selectById(playerA.getId()).getRating();
+        Integer ratingB = WebSocketServer.userMapper.selectById(playerB.getId()).getRating();
+
+        if ("A".equals(loser)) {
+            ratingA -= 5;
+            ratingB += 10;
+        } else if ("B".equals(loser)) {
+            ratingA += 10;
+            ratingB -= 5;
+        }
+
+        updateUserRating(playerA, ratingA);
+        updateUserRating(playerB, ratingB);
+
+    }
+    //更新分数
+    private void updateUserRating(Player player, Integer rating) {
+        User user = WebSocketServer.userMapper.selectById(player.getId());
+        user.setRating(rating);
+        WebSocketServer.userMapper.updateById(user);
     }
 
     //广播移动

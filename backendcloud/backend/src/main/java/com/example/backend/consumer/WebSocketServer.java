@@ -24,7 +24,7 @@ public class WebSocketServer {
     public final static ConcurrentHashMap<Integer, WebSocketServer> users = new ConcurrentHashMap<>();
     private User user;
     private Session session = null;
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
     private static RestTemplate restTemplate;
     private final static String addPlayerUrl = "http://localhost:3001/player/add/";
     private final static String removePlayerurl = "http://localhost:3001/player/remove/";

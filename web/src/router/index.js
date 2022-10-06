@@ -8,11 +8,20 @@ import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
 import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
 import LocalGameMap from '../components/LocalGameMap'
 import store from '../store/index'
+import HomeIndex from '../views/HomeIndex'
 const routes = [
   {
     path: "/",
     name: "home",
-    redirect: "/pk/",
+    redirect: "/home/",
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/home/",
+    name: "home_index",
+    component: HomeIndex,
     meta: {
       requestAuth: true,
     }

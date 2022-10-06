@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/account/token/", "/user/account/register/","/pk/bot/").permitAll()
+                .antMatchers("/user/account/token/", "/user/account/register/","/pk/bot/","/ranklist/getlist/").permitAll()
                 .antMatchers("/pk/start/game/").hasIpAddress("localhost")
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();

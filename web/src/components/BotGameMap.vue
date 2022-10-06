@@ -29,6 +29,9 @@
         </div>   
         <div class="col-1" style="overflow: hidden; text-overflow:ellipsis; white-space: nowrap;">
             <button type="button" class="btn btn-light">{{pointB}}</button> 
+            <div class="user-photo">
+                <img src="https://img-blog.csdnimg.cn/5b13c6b34fa349f79aa9abca0fea691d.jpeg" alt="">
+            </div>
             <div class="result-board-text" >
                 <font color="white" size="5">
                     我心逍遥

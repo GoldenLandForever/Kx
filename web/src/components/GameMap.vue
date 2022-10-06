@@ -219,7 +219,7 @@ font-style: italic;
 padding-top: 5vh;
 }
 div.text-wrap {
-text-align: center;
+width: 100px;
 color:rgba(247, 245, 245, 0.879);
 font-size: 20px;
 font-weight: 200;
