@@ -22,6 +22,8 @@ export default{
         b_point:0,
         a_photo:"",
         b_photo:"",
+        a_status:0,
+        b_status:0,
     },
     getters:{
 
@@ -78,6 +80,13 @@ export default{
             state.a_point = MyData.a_point;
             state.b_point = MyData.b_point;
         },
+        updateAStatus(state,MyData){
+            state.a_status = MyData;
+        },
+        updateBStatus(state,MyData){
+            state.b_status = MyData;
+        },
+
     },
     actions:{
 

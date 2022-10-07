@@ -27,7 +27,7 @@
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex';
-
+import { onUnmounted } from 'vue'
 export default {
     setup() {
         const store = useStore();
@@ -47,6 +47,11 @@ export default {
             }
         }
 
+        onUnmounted(() =>{
+            store.state.pk.socket.send(JSON.stringify({
+                event: "stop-matching",
+            }));
+        })
         return {
             match_btn_info,
             click_match_btn,

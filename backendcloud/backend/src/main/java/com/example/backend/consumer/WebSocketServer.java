@@ -73,13 +73,8 @@ public class WebSocketServer {
         restTemplate.postForObject(addPlayerUrl, data, String.class);
     }
     public static void startGame(Integer aId, Integer bId) {
-        //人机加入会话
-        if(bId == 114514){
-            users.put(bId, users.get(aId));
-        }
 
         User a = userMapper.selectById(aId), b = userMapper.selectById(bId);
-//        Bot aBot = botMapper.selectById(aBotId), bBot = botMapper.selectById(bBotId);
 
         Game game = new Game(a.getId(), b.getId());
 
@@ -102,8 +97,6 @@ public class WebSocketServer {
         respGame.put("b_point",game.getB_point());
         respGame.put("a_photo",a.getPhoto());
         respGame.put("b_photo",b.getPhoto());
-//        respGame.put("step", 0);
-//        respGame.put("dice_num", 0);
 
         JSONObject respA = new JSONObject();
         respA.put("event", "match_success");
@@ -155,6 +148,14 @@ public class WebSocketServer {
             fillA(data.getInteger("direction"));
         }else if ("fillB".equals(event)) {
             fillB(data.getInteger("direction"));
+        }else if("botA".equals(event)){
+            game.aBot();
+        }else if ("botB".equals(event)){
+            game.bBot();
+        } else if ("surrenderA".equals(event)) {
+            game.setLoser("A");
+        } else if ("surrenderB".equals(event)) {
+            game.setLoser("B");
         }
 
     }

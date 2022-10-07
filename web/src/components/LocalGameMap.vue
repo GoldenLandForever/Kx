@@ -1,14 +1,28 @@
 <template>
     <div class="row">
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointA}}</button>    
+            <button type="button" class="btn btn-light">
+                <img class="point" src="@/assets/0.png" alt="" v-if="pointA == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="pointA == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="pointA == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="pointA == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="pointA == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="pointA == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="pointA == 6" width="70" height="70">
+            </button>    
             <div class="result-board-text" >
                 1P
             </div>
         </div>
         <div class="col-3">
             <button v-for="(item,index) in $store.state.pk.aMap" :key="index" :value="index" @click="fillA(index)">
-                {{item}}
+                <img class="point" src="@/assets/0.png" alt="" v-if="item == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="item == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="item == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="item == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="item == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="item == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="item == 6" width="70" height="70">
             </button>
         </div>
         <div class="col-4">
@@ -21,11 +35,25 @@
         </div>
         <div class="col-3">
             <button v-for="(item,index) in $store.state.pk.bMap" :key="index" :value="index" @click="fillB(index)">
-                {{item}}
+                <img class="point" src="@/assets/0.png" alt="" v-if="item == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="item == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="item == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="item == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="item == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="item == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="item == 6" width="70" height="70">
             </button>
         </div>   
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointB}}</button> 
+            <button type="button" class="btn btn-light">
+                <img class="point" src="@/assets/0.png" alt="" v-if="pointB == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="pointB == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="pointB == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="pointB == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="pointB == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="pointB == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="pointB == 6" width="70" height="70">
+            </button> 
             <div class="result-board-text" >
                 2P
             </div>   
@@ -64,7 +92,7 @@ export default{
 setup() {
     
     const store = useStore();
-    let arr = ref([0,1,2,3,4,5,6,7,8]);
+    console.log();
     let match_btn_info = ref('开始游戏');
     let pointA = ref();
     let is_fill = ref(true);
@@ -238,23 +266,22 @@ setup() {
         }else{
             store.commit("updateLoser", "A");
         }
-        console.log(store.state.pk.loser);
-        console.log(store.state.pk.a_score);
     }
     const restart = () => {
         pointA.value = '';
         pointA.value = '';
         store.commit("clearMap");
+        store.commit("updateModel","none");
         store.commit("updateStatus", "matching");
         store.commit("updateLoser", "none");
     }
     onUnmounted(() => {
         store.commit("updateModel","none");
         store.commit("clearMap");
+        store.commit("updateLoser", "none");
     })
 
     return {
-        arr,
         click_match_btn,
         match_btn_info,
         fillA,
@@ -277,6 +304,7 @@ button {
 width: 85px;
 height: 85px;
 border-radius: 25%;
+background-color: rgba(245,245,245);
 }
 div.mid{
 width: 100px;
@@ -313,4 +341,5 @@ div.mid > button {
     font-weight: 500;
     font-style: italic;
 }
+
 </style>

@@ -23,6 +23,8 @@ public class Game extends Thread {
     private Integer stepA = null;
 
     private Integer stepB = null;
+    private Integer a_status = 0;
+    private Integer b_status = 0;
 
     private ReentrantLock lock = new ReentrantLock();
 
@@ -64,6 +66,9 @@ public class Game extends Thread {
 
     private String loser = null;
 
+    public String getLoser(){return loser;}
+    public void setLoser(String data){loser = data;}
+
     public Game(Integer id_a, Integer id_b) {
         aMap = new Integer[9];
         bMap = new Integer[9];
@@ -96,6 +101,28 @@ public class Game extends Thread {
         sendAllMsg(resp.toJSONString());
     }
 
+    public void aBot(){
+        if(a_status == 0) a_status = 1;
+        else a_status = 0;
+
+        JSONObject resp = new JSONObject();
+        resp.put("event", "Bot");
+        resp.put("a_status", a_status);
+        resp.put("b_status",b_status);
+        sendAllMsg(resp.toJSONString());
+    }
+    public void bBot(){
+
+        if (b_status == 0)b_status = 1;
+        else b_status = 0;
+
+        JSONObject resp = new JSONObject();
+        resp.put("event", "Bot");
+        resp.put("a_status", a_status);
+        resp.put("b_status",b_status);
+
+        sendAllMsg(resp.toJSONString());
+    }
     //检查下一步操作并切换当前操作用户
     private boolean nextStep() {
         //最快两毫秒操作一次
@@ -108,9 +135,33 @@ public class Game extends Thread {
         for (int i = 0; i < 200; i++) {
             try {
                 Thread.sleep(100);
-
+                if (loser != null){
+                    judge_loser();
+                    sendResult();
+                    return true;
+                }
                 if (Objects.equals(turn, "A") && stepA != null) return true;
+                if (Objects.equals(turn, "A") && a_status == 1){
+                    rollA();
+                    int index = 0;
+                    for (int j = 0; j < 9; j++) {
+                        if(aMap[j] != 0) continue;
+                        index = j;
+                        break;
+                    }
+                    setNextStepA(index);
+                }
                 if (Objects.equals(turn, "B") && stepB != null) return true;
+                if (Objects.equals(turn, "B") && b_status == 1){
+                    rollB();
+                    int index = 0;
+                    for (int j = 0; j < 9; j++) {
+                        if(bMap[j] != 0) continue;
+                        index = j;
+                        break;
+                    }
+                    setNextStepB(index);
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -179,10 +230,11 @@ public class Game extends Thread {
         int a_score = countMap(aMap);
         int b_score = countMap(bMap);
 
-        if (a_score > b_score) loser = "B";
-        else if (a_score < b_score) loser = "A";
-        else loser = "all";
-
+        if (loser == null) {
+            if (a_score > b_score) loser = "B";
+            else if (a_score < b_score) loser = "A";
+            else loser = "all";
+        }
         getPlayerA().setScore(a_score);
         getPlayerB().setScore(b_score);
 
@@ -193,16 +245,18 @@ public class Game extends Thread {
     public void run() {
         for (int i = 0; i < 1000; i++) {
             //没有下一步操作或者下一步操作不合法都会导致游戏结束
+
             if (nextStep()) {
                 //执行下一步操作
-                setMap();
-                judge_full();
-                sendCurMap();
-
-                if (!status.equals("playing")) {
-                    sendResult();
-                    break;
-                }
+                if(loser == null) {
+                    setMap();
+                    judge_full();
+                    sendCurMap();
+                    if (!status.equals("playing")) {
+                        sendResult();
+                        break;
+                    }
+                }else break;
             } else {
                 if (Objects.equals(turn, "A")) loser = "A";
                 else loser = "B";

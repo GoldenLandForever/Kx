@@ -1,17 +1,34 @@
 <template>
     <div class="row">
         <div class="col-1">
-            <button type="button" class="btn btn-light">{{pointA}}</button>    \
+            <button type="button" class="btn btn-light">
+                <img class="point" src="@/assets/0.png" alt="" v-if="pointA == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="pointA == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="pointA == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="pointA == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="pointA == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="pointA == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="pointA == 6" width="70" height="70">
+            </button>    
             <div class="user-photo">
                 <img :src="$store.state.user.photo" alt="">
             </div>
             <div class="result-board-text" >
                 {{$store.state.user.username}}
             </div>
+            <div>
+                <button class="btn btn-danger" @click="surrender">认输</button>
+            </div>
         </div>
         <div class="col-3">
             <button v-for="(item,index) in $store.state.pk.aMap" :key="index" :value="index" @click="fillA(index)">
-                {{item}}
+                <img class="point" src="@/assets/0.png" alt="" v-if="item == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="item == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="item == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="item == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="item == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="item == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="item == 6" width="70" height="70">
             </button>
         </div>
         <div class="col-4">
@@ -23,18 +40,32 @@
             </div>
         </div>
         <div class="col-3">
-            <button v-for="(item,index) in $store.state.pk.bMap" :key="index" :value="index" @click="fillB(index)">
-                {{item}}
+            <button v-for="(item,index) in $store.state.pk.bMap" :key="index" :value="index">
+                <img class="point" src="@/assets/0.png" alt="" v-if="item == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="item == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="item == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="item == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="item == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="item == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="item == 6" width="70" height="70">
             </button>
         </div>   
         <div class="col-1" style="overflow: hidden; text-overflow:ellipsis; white-space: nowrap;">
-            <button type="button" class="btn btn-light">{{pointB}}</button> 
+            <button type="button" class="btn btn-light">
+                <img class="point" src="@/assets/0.png" alt="" v-if="pointB == 0" width="70" height="70">
+                <img class="point" src="@/assets/1.png" alt="" v-if="pointB == 1" width="70" height="70">
+                <img class="point" src="@/assets/2.png" alt="" v-if="pointB == 2" width="70" height="70">
+                <img class="point" src="@/assets/3.png" alt="" v-if="pointB == 3" width="70" height="70">
+                <img class="point" src="@/assets/4.png" alt="" v-if="pointB == 4" width="70" height="70">
+                <img class="point" src="@/assets/5.png" alt="" v-if="pointB == 5" width="70" height="70">
+                <img class="point" src="@/assets/6.png" alt="" v-if="pointB == 6" width="70" height="70">
+            </button> 
             <div class="user-photo">
                 <img src="https://img-blog.csdnimg.cn/5b13c6b34fa349f79aa9abca0fea691d.jpeg" alt="">
             </div>
             <div class="result-board-text" >
                 <font color="white" size="5">
-                    我心逍遥
+                    普通僵尸
                 </font>
             </div>   
         </div>
@@ -44,7 +75,7 @@
             平局
         </div>
         <div class="result-board-text" v-else-if="$store.state.pk.loser === 'A'">
-            2P获胜
+            普通僵尸获胜
         </div>
         <div class="result-board-text" v-else-if="$store.state.pk.loser === 'B' ">
             {{$store.state.user.username}}获胜
@@ -97,7 +128,38 @@ setup() {
 
         }   
     }
+    const surrender = () =>{
+        let a_score = 0;
+        let b_score = 0;
+        let aMap = store.state.pk.aMap;
+        let bMap = store.state.pk.bMap;
+        for (let i = 0; i < 3; i++) {
+            let a = aMap[i * 3];
+            let b = aMap[i * 3 + 1];
+            let c = aMap[i * 3 + 2];
 
+            if (a == b && b == c) a_score += a * 9;
+            else if (a == b) a_score += a * 4 + c;
+            else if (a == c) a_score += a * 4 + b;
+            else if (b == c) a_score += b * 4 + a;
+            else a_score += (a + b + c);
+        }
+        for (let i = 0; i < 3; i++) {
+            let a = bMap[i * 3];
+            let b = bMap[i * 3 + 1];
+            let c = bMap[i * 3 + 2];
+
+            if (a == b && b == c) b_score += a * 9;
+            else if (a == b) b_score += a * 4 + c;
+            else if (a == c) b_score += a * 4 + b;
+            else if (b == c) b_score += b * 4 + a;
+            else b_score += (a + b + c);
+        }
+        
+        store.state.pk.a_score = a_score;
+        store.state.pk.b_score = b_score;
+        store.commit("updateLoser","A");
+    }
     const check_match_end = () => {
         for (let i = 0; i < 9; i++) {
             if(store.state.pk.aMap[i] == 0){
@@ -183,12 +245,16 @@ setup() {
                         success(resp) {
                             store.state.pk.bMap[resp] = pointB.value;
                             check_delete(resp);
-                            
+                            if(check_match_end()){
+                                game_result();
+                                alert("游戏结束");
+                            }
                         },
                         error(resp) {
                             console.log(resp);
                         }
                     });
+                    
                 }else{
                     alert("不能重复落子");
                 }
@@ -197,16 +263,12 @@ setup() {
                 alert("不能放置于对手棋盘");
             }
         }else{
-            alert("轮到对手掷筛");
+            alert("请投掷骰子");
         }
         if(check_match_end()){
             game_result();
             alert("游戏结束");
         }
-    }
-    const fillB = () => {
-        //需要调整报错
-        alert("不能放置于对手棋盘");
     }
     const game_result = () => {
         let a_score = 0;
@@ -252,6 +314,7 @@ setup() {
         store.commit("clearMap");
         store.commit("updateStatus", "matching");
         store.commit("updateLoser", "none");
+        store.commit("updateModel","none");
     }
     onUnmounted(() => {
         store.commit("updateModel","none");
@@ -262,7 +325,6 @@ setup() {
         click_match_btn,
         match_btn_info,
         fillA,
-        fillB,
         pointA,
         pointB,
         is_fill,
@@ -270,6 +332,7 @@ setup() {
         check_delete,
         game_result,
         restart,
+        surrender,
     }
 
 }

@@ -75,6 +75,7 @@ export default {
                 else if (data.event === 'rollA') store.commit("updateApoint", data);
                 else if (data.event === 'rollB') store.commit("updateBpoint", data);
                 else if (data.event === 'curMap') store.commit("updateCurMap", data);
+                else if(data.event === 'Bot') store.commit("updateBotStatus",data);
 
                 socket.onclose = () => {
                     console.log("disconnected!")
