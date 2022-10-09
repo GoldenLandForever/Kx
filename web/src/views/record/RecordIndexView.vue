@@ -128,7 +128,8 @@ setup() {
                     setTimeout(() => alert("点击左边九宫格即可以填入数字，注意无法填在对手九宫格中哦！"), 200);
                     step.value ++;
                   }
-                  if(step.value == 4){
+                  console.log(step);
+                  if(step.value == 5){
                     setTimeout(() => alert("玩家的某线得分 = 各点数 X 此点数在此线出现次数的平方的总和 "),200);
                     setTimeout(() => alert("各玩家得分 = 己区各线的得分的总和 "),400);
                   }
